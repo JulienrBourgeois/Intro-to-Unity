@@ -41,11 +41,28 @@ There it was! A fully completed player controller with crouching features, jumpi
 
 
 3D Object Oriented Programming:
+Having recently completed my first OOP course with java in October, I soon realized how much Unity objects and scripts correlated to the OOP features of the java language. You could use classes and structures to represnt objects and keep their important values, that would express their attributes during runtime. 
+
+Since I had created a player moving around with animations, I figured, why not let this player run around and hit trees? My first OOP experience with unity was with these trees. To start off, I made a script and class, calling it trees. I then made a prefab for a tree and added the script to it. Once the game started, I would instantiate 20 trees within the boundaries of the plane and create a class for all 20 of them, storing these 20 class objects inside of an interactable list. 
+
+For the tree class there were some variables I could take into account and access later on in my program. Every tree had a name, a health, a location etc.
+When instantiating the trees I created a class with these variables and inputted that new class into a list. Inside of the tree script I then made a damage funtion that would be called every time the player's hand collided with that tree. This was a great introduction to 3D OOP as I was able to understand how objects and scripts interact with one another through run time. I also had good experience with making custom classes due to my previous Java course.
+
+Now, its time to move on to a better way to hit trees with the player! Raycasting!
+
 
 
 
 Raycasting:
+Although I had a system in which the player could hit trees and break them with its hand, it was very scuffed and did not work accurately enough. The player would have to practically be on the tree to hit it and it was not very realistic. After doing some research, I ran into the raycasting feature on Unity. I found it quite fasinaating! Being able to shoot a point vector into 3D space until it collided with something is a very useful feature!
 
+It took my quite a bit to figure it out but eventually I had a function that could shoot ray casts. I even still use this funtion to this day in all of my escape room projects! However, after creating this function it was not very perfect. Several problems arose : 1) I wanted to send the raycast to the position of the mouse 2) The raycast would sometimes hit the player object and not continue on 3) Every time the hit button as clicked, only one thin raycast would be sent, resulting in a small room for error with the aim. 
+
+To fix the first problem, I first had to figure out how to lock the mouse into the screen during run time. This was pretty simple as I found the syntax, which I still use to this day, through several google searches. All it does is set the Cursor lock mode to locked and the mouse is loked once the user clicks on the screen for the first time. 
+
+To fix the second prblem, I had to create a layer mask that would exclude the player object from it. I then had to add this layer mask to my raycast function. After implementing this syntax, my second problem was fixed. 
+
+To fix 
 
 
 Binary Formatting:
