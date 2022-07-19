@@ -62,12 +62,15 @@ To fix the first problem, I first had to figure out how to lock the mouse into t
 
 To fix the second prblem, I had to create a layer mask that would exclude the player object from it. I then had to add this layer mask to my raycast function. After implementing this syntax, my second problem was fixed. 
 
-To fix 
+To fix the third problem, I sent out 5-10 raycasts at a time to decrease the difficulty for the user. For example, if the player shot a raycast in the general direction of the tree and was close enough to it, I wanted the player to be able to damage it. I didn't want to make it a task in itself for the player to hit suh a large, non-moving object. This made the gameplay feel a lot smoother.  
 
 
-Binary Formatting:
+Binary Formatting: 
+After experimenting with basic movement systems and OOP in Unity, I wanted to learn how to save data to a local file, which could then be extracted and reloaded every time the game started. To start off, I usesd player preferences, which was a very simple "defaults" syntax that could save things to a loaded dictionary. However, after trying to save tons of things to player preferences and trying to reload the game, I soon realized that player preferences was not strong enough to hold large amounts of data.
 
+As an alternative, I looked towards Binary Formatting to save my data to the file. Binary Formatting takes a class, serializes it into a file of 1's and 0's, and saves it to a local file. Then, when you want to reaccess that data, you can deserialize it back into the class it once was and back into the script. Once I figured out the syntax to save and load any given class to a local file using Binary Formatting, I started with little things such as player location (Vector3), player health (Float) and the amount of trees in the scene. Now, every time I reloaded the program, the player would be in its previous position, all the trees' positions would be saved, and the player would have the same amount of health. 
 
+Binary formatting is a great way to save data in Unity. Being very straight forward, it was easy to get the hang of it and get used to it all. My next task after this was to learn about terrain. I had figured out how to make a player, add objects and save data. Now I wanted to know how to regulate and make terrain in which the player could navigate through.
 
 Random Seeding:
 
@@ -75,9 +78,21 @@ Random Seeding:
 
 Perlin Noise:
 
+Growing up playing games like Minecraft, I was fascinated by the idea of infinite terrain generation. While doing research over this topic, I came across the concept of perlin noise, or gradual random terrain generation. To apply this to my game, I found perlin noise syntax that could take a terrain, and fix its terrain data vertext points using perlin noise to create a gradual, smooth looking terrain. At first, I didn't quite understand how it worked, but I started to trial and error with the parameters and found that I could make different looking land based on the depth, height and width of my terrain. 
 
+I now had a player on a perlin noise 256 x 256 terrain that could naviagate around and break trees. One more thing I wanted to accomplish was the infinite generation of this terrain (like Minecraft), so this player could run around freely forever. After about 4 days of problems and setbacks, I finally came up with a solid algorithm and idea as to how to achieve this. I would break each terrain into a 4 block quadrant, tracking which quarant the player was on at all times. Then, based on the player's quadrant I would check the distance from the two edges. If the player came close enough, I would spawn a new terrain. The algorithm worked very well, but there wer several problems. 1) After 5 minutes of running on forever, my game would de-render and crash. 2) The perlin noise would change for all spawned terrains when a new piece spawned in. 3) I could not diagonally spawd terrains. 
+
+To fix the first problem, I had to add all of the spawned terrains to a List. I then made a function to iterate through this list and check the distance of each terrain from the player. If that terrain was far enough, we would de-render and stop all functioning of the terrain to free up the memory.
+
+To fix the second problem , I had to to stop using a terrain prefab and had to instantiate a terrain during runtime and call the perlin noise function on it. That way, every new spawned terrain wasn't pointing to the prefab's terrain data and each had some of their own.
+
+To fix the third problem, I had to add one more conditional statement to my infinite terrain algorithm. If the player was close enough to both edges simaltaneously, I would spawn a diagonal terrain as well. 
+
+At this point, I had an infinite terrain using perlin noise that the player could run around on. However, the terrain felt very dull and I wanted to make it look better. For about 2 weeks, I took my sights off of programming and learned the design side of Unity!
 
 Art and Design:
+
+Being a territory I had never corssed paths with, I was so fascinated by Unity's capabilites in the art aspects of game design. To start my journey with design, I watched videos on terrain generation using 3D height map tools such as Map Magic and Mpa Magic 2. I learned how to make beautiful, mountainous terrains using texture nodes and height nodes alone. Eventually, I had my game use these complex heightmaps instead of dull terrain objects.
 
 
 
