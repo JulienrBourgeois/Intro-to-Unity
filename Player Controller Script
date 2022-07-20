@@ -1,0 +1,369 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerController : MonoBehaviour
+{
+    //speeds 
+    public float currSpeed;
+    public float walkSpeed;
+    public float frontSpeed;
+
+    //Audio Clips
+    public AudioClip stepSound;
+    //for steps
+    private int stepCount;
+    private int lastAnim;
+    //
+    public AudioClip jumpSound;
+    public AudioClip fallingSound;
+    public AudioClip attackSound;
+    public AudioClip crouchSound;
+
+    //jump force
+    private float jumpForce=6.0f;
+
+    //bools for controller
+    public bool isSprinting;
+    public bool isGrounded=false;
+    public bool justJumped=false;
+    private float lastJumpTime;
+    public bool isCrouched=false;
+    public bool attacking=true;
+    public bool falling=false;
+
+    //Vector2 rotes
+    private Vector2 turn;
+    private float xSense=15.0f;
+
+    //Components
+    private Rigidbody playerRb;
+    private Animator playerAnim;
+    private AudioSource playerAudio;
+
+    public LayerMask layerMask;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+         playerRb=GetComponent<Rigidbody>();
+        playerAnim=GetComponent<Animator>();
+        playerAudio=GetComponent<AudioSource>();
+
+
+        MouseLock();
+
+		
+    }
+
+    void Update()
+    {
+
+
+        if(transform.position.y<-100f)
+        {
+            transform.position = new Vector3(128f,100f,128f);
+        }
+	
+	
+        float verticalInput= Input.GetAxis("Vertical");
+		float horizontalInput= Input.GetAxis("Horizontal");
+        //gets speed and direction based on inputs
+        CalculateMovements(horizontalInput, verticalInput);
+
+        CalculateAnimations(horizontalInput, verticalInput);
+
+        if(justJumped)
+        {
+            if(Time.time- lastJumpTime>0.5f)
+            {
+                justJumped=false;
+            }
+        }
+
+        //horizontal turning
+        Rotations();
+
+        //for jumping
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            if(isGrounded && justJumped==false)
+            {
+                if(isCrouched)
+                {
+                    isCrouched=false;
+                }
+                else{
+                    playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                playerAnim.SetTrigger("Jump");
+                lastJumpTime=Time.time;
+                isGrounded=false;
+                justJumped=true;
+                }
+            }
+        }
+
+        //for crouching 
+        if(Input.GetKeyDown(KeyCode.C) && isGrounded)
+        {
+            if(isCrouched==false)
+            {
+                isCrouched=true;
+                Crouch();
+            }
+            else
+            {
+                isCrouched=false;
+            }
+        }
+
+        if(isCrouched)
+        {
+            playerAnim.SetBool("Crouched", true);
+        }
+        else
+        {
+            playerAnim.SetBool("Crouched", false);
+        }
+
+        //for attacking
+        if(playerAnim.GetCurrentAnimatorStateInfo(0).IsName("Punch"))
+        {
+            attacking=true;
+        }
+        else
+        {
+            attacking=false;
+        }
+		
+		
+		//Raycasts
+		
+		RayCastCalculation();
+        
+    }
+	
+	void RayCastCalculation()
+	{
+		if(attacking)
+		{
+			RaycastHit hit;
+			Ray ray= GameObject.Find("Main Camera").GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+			
+			if(Physics.Raycast(ray, out hit, 1000, layerMask))
+			{
+				Debug.Log("RayCast Shot!");
+
+
+               
+			}
+		}
+	}
+
+
+    void CalculateAnimations(float horizontalInput, float verticalInput)
+    {
+        if(horizontalInput==0 && verticalInput==0)
+        {
+            playerAnim.SetBool("Idle", true);
+        }
+        else 
+        {
+            playerAnim.SetBool("Idle",false);
+        }
+
+        if(isSprinting)
+        {
+            playerAnim.SetBool("Sprint",true);
+        }
+        else 
+        {
+            playerAnim.SetBool("Sprint",false);
+        }
+
+        if(horizontalInput==0)
+        {
+            playerAnim.SetBool("HorizontalZero",true);
+        }
+        else
+        {
+            playerAnim.SetBool("HorizontalZero",false);
+        }
+
+        if(verticalInput==0)
+        {
+            playerAnim.SetBool("VerticalZero",true);
+        }
+        else
+        {
+            playerAnim.SetBool("VerticalZero", false);
+        }
+
+       if(isGrounded)
+       {
+           playerAnim.SetBool("InAir", false);
+       }
+       else
+       {
+           playerAnim.SetBool("InAir", true);
+       }
+
+       if(Input.GetMouseButton(0))
+       {
+           playerAnim.SetBool("Attack", true);
+       }
+       else 
+       {
+           playerAnim.SetBool("Attack", false);
+       }
+       
+
+
+        playerAnim.SetFloat("Horizontal", horizontalInput);
+        playerAnim.SetFloat("Vertical",verticalInput);
+
+    
+    }
+
+    void Rotations()
+    {
+        turn.x+=Input.GetAxis("Mouse X") * xSense;
+		transform.localRotation= Quaternion.Euler(0, turn.x, 0);
+    }
+
+    void CalculateMovements(float horizontalInput, float verticalInput)
+    {
+        	
+		Vector3 mousePos= Input.mousePosition;
+		
+		currSpeed=0.0f;
+		
+		//checks for front or back movement
+		if(verticalInput<0)
+		{
+			currSpeed = walkSpeed;
+		}
+		else if(verticalInput>0||horizontalInput!=0)
+		{
+			currSpeed=frontSpeed;
+		}
+		
+		//gets sprint bool
+		if(Input.GetKey(KeyCode.LeftShift)||Input.GetKey(KeyCode.RightShift))
+		{
+			isSprinting=true;
+		}
+		else
+		{
+			isSprinting=false;
+			
+			if(verticalInput>0||horizontalInput!=0)
+			{
+				currSpeed=walkSpeed;
+			}
+		}
+		
+		//final check for both
+		if(verticalInput!=0&&horizontalInput!=0)
+		{
+			currSpeed= currSpeed * 2/3;
+		}
+
+        if(isCrouched)
+        {
+            currSpeed=walkSpeed;
+        }
+
+		//moves 
+		transform.Translate(Vector3.forward * currSpeed * verticalInput * Time.deltaTime);
+		transform.Translate(Vector3.right * currSpeed * horizontalInput * Time.deltaTime);
+    }
+
+
+     void OnCollisionEnter(Collision other)
+    {
+       
+	
+		
+		 if(other.gameObject.CompareTag("Ground"))
+        {
+            if(justJumped==false)
+            {
+                isGrounded=true;
+            }
+
+            if(falling)
+            {
+                playerAudio.Stop();
+                falling=false;
+            }
+
+
+            int num = GameObject.Find("current world").GetComponent<WorldGen>().specialAccountNumber;
+
+
+            PlayerPrefs.SetFloat("Seed: "+ num + " yPos", transform.position.y);
+
+
+
+        }
+	
+    }
+
+
+      public void MouseLock()
+    {
+        Cursor.lockState=CursorLockMode.Locked;
+    }
+
+    private void Fall()
+    {
+        if(isGrounded==false && falling==false)
+        {
+            playerAudio.clip=fallingSound;
+            playerAudio.Play();
+            falling=true;
+        }
+    }
+
+    private void Step(int anim)
+    {
+        if(stepCount==0)
+        {
+            lastAnim=anim;
+        }
+
+        if(anim==lastAnim)
+        {
+            playerAudio.PlayOneShot(stepSound);
+
+            lastAnim=anim;
+        }
+        else
+        {
+            if(playerAudio.isPlaying==false)
+            {
+                playerAudio.PlayOneShot(stepSound);
+                
+                lastAnim=anim;
+            }
+        }
+
+        stepCount++;
+    }
+
+    private void Attack()
+    {
+        playerAudio.PlayOneShot(attackSound, 0.15f);
+    }
+
+    private void Crouch()
+    {
+        playerAudio.PlayOneShot(crouchSound, 0.15f);
+    }
+
+    private void Jump()
+    {
+        playerAudio.PlayOneShot(jumpSound, 0.15f);
+    }
