@@ -1,0 +1,21 @@
+This is my raycast syntax that I use in all of my games.
+
+
+--------------------------------------
+
+void RayCastCalculation()
+	{
+		if(attacking)
+		{
+			RaycastHit hit;
+			Ray ray= GameObject.Find("Main Camera").GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+			
+			if(Physics.Raycast(ray, out hit, 1000, layerMask))
+			{
+				Debug.Log("RayCast Shot!");
+
+
+               
+			}
+		}
+	}
