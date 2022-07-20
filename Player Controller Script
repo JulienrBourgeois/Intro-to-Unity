@@ -1,3 +1,7 @@
+This is the code for my player controller script that I use for all my games.
+
+-------------------------------------------
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
