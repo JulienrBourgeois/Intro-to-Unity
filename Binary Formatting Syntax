@@ -1,0 +1,43 @@
+This is my syntax for binary formatting that I use in all my games.
+
+------------------------------------------------
+
+public void SavePlayer (Player player)
+{
+    BinaryFormatter formatter = new BinaryFormatter();
+
+    string path = Application.persistentDataPath + "/user.player";
+
+    FileStream stream = new FileStream(path, FileMode.Create);
+    formatter.Serialize(stream, player);
+
+    stream.Close();
+}
+
+
+ public Player LoadPlayer()
+ {
+        string path = Application.persistentDataPath + "/user.player";
+
+        Player player;
+
+        if(File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+
+            FileStream stream = new FileStream(path, FileMode.Open);
+
+            player = formatter.Deserialize(stream) as Player;
+
+            stream.Close();
+        }
+        else 
+        {
+            player = new Player(GetComponent<WorldLoad>());
+            SavePlayer(player);
+
+        }
+
+
+        return player;
+ }
