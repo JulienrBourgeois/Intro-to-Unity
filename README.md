@@ -104,7 +104,7 @@ By the end of my design journey with Unity, I was even able to pass practice des
 
 
 
-That's it! All of those mini-tasks together form my introduction to Unity programming! I spent a total of eight months working on all of these little tasks, while also having to keep up with my other school work. I even got the privelage to sit down and talk with some Unity VR software developers about the logic of some of these tasks! Unity will forever be a part of my life whether or not I use it in the future! Whenever i'm feeling creative and want to make a cool game, Unity is the place for me to come back to. I am son grateful for my journey with Unity over the past 8 months as it has really boosted my love for computer science as a whole!
+That's it! All of those mini-tasks together form my introduction to Unity programming! I spent a total of eight months working on all of these little tasks, while also having to keep up with my other school work. I even got the privelage to sit down and talk with some Unity VR software developers about the logic of some of these tasks! Unity will forever be a part of my life whether or not I use it in the future! Whenever i'm feeling creative and want to make a cool game, Unity is the place for me to come back to. I am so grateful for my journey with Unity over the past 8 months as it has really boosted my love for computer science as a whole!
 
 
 
